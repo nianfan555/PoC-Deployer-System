@@ -37,8 +37,11 @@ public class AboutActivity extends AppCompatActivity {
         // 原作者酷安
         findViewById(R.id.row_original).setOnClickListener(v -> openUrl("http://www.coolapk.com/u/21820733"));
 
-        // 项目 GitHub
+        // 项目 GitHub（原项目）
         findViewById(R.id.row_github).setOnClickListener(v -> openUrl("https://github.com/wqry085/PoC-Deployer-System"));
+
+        // 二改仓库 GitHub
+        findViewById(R.id.row_github_remake).setOnClickListener(v -> openUrl("https://github.com/nianfan555/PoC-Deployer-System"));
     }
 
     private void openUrl(String url) {

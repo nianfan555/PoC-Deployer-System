@@ -93,6 +93,13 @@ public class ZygoteFragment extends Fragment {
     // UI 控件
     private TextView statusValue;
     private TextView logValue;
+    private TextView logValueFull;
+    private android.widget.ImageButton btnExpandLog;
+    private androidx.core.widget.NestedScrollView logScroll;
+    private boolean isLogExpanded = false;
+
+    // 静态日志缓冲（供预设页等跨页读取输出）
+    public static volatile String sLastLog = "";
     private TextView ipValue;
     private TextView portValue;
     private TextView commandValue;
@@ -138,6 +145,9 @@ public class ZygoteFragment extends Fragment {
     private void bindViews(View view) {
         statusValue = view.findViewById(R.id.status_value);
         logValue = view.findViewById(R.id.log_value);
+        logValueFull = view.findViewById(R.id.log_value_full);
+        btnExpandLog = view.findViewById(R.id.btn_expand_log);
+        logScroll = view.findViewById(R.id.log_scroll);
         ipValue = view.findViewById(R.id.ip_value);
         portValue = view.findViewById(R.id.port_value);
         commandValue = view.findViewById(R.id.command_value);
@@ -187,6 +197,11 @@ public class ZygoteFragment extends Fragment {
 
     private void setupListeners(View root) {
         if (root == null) return;
+
+        // 日志展开/收起
+        if (btnExpandLog != null) {
+            btnExpandLog.setOnClickListener(v -> toggleLogExpanded());
+        }
 
         root.findViewById(R.id.row_ip).setOnClickListener(v -> showEditDialog(
                 getString(R.string.pref_server_ip), KEY_IP, ipValue, DEFAULT_IP_SHOW, true));
@@ -493,12 +508,45 @@ public class ZygoteFragment extends Fragment {
             checked[i] = selected.contains(values[i]);
         }
 
+        // 自定义内容：顶部排错提示 + 可滚动多选列表（避免 setMessage 与 setMultiChoiceItems 冲突）
+        LinearLayout content = new LinearLayout(context);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(20), dp(8), dp(20), dp(4));
+
+        TextView tip = new TextView(context);
+        tip.setText("⚠️ 排错提示：若孵化进程 ls /sdcard 提示 No such file or directory，\n说明未勾选 --mount-external-* 选项，新进程未挂载 /sdcard。\n请勾选 --mount-external-full 后重新注入。");
+        tip.setTextSize(12f);
+        tip.setTextColor(context.getColor(R.color.md_theme_light_error));
+        tip.setLineSpacing(1.2f, 1.2f);
+        tip.setPadding(0, 0, 0, dp(12));
+        content.addView(tip);
+
+        // 选项列表（可滚动）
+        LinearLayout listLayout = new LinearLayout(context);
+        listLayout.setOrientation(LinearLayout.VERTICAL);
+
+        for (int i = 0; i < options.length; i++) {
+            final int index = i;
+            androidx.appcompat.widget.AppCompatCheckBox cb = new androidx.appcompat.widget.AppCompatCheckBox(context);
+            cb.setText(options[i]);
+            cb.setTextSize(14f);
+            cb.setChecked(checked[i]);
+            cb.setPadding(0, dp(6), 0, dp(6));
+            cb.setOnCheckedChangeListener((buttonView, isChecked) -> checked[index] = isChecked);
+            listLayout.addView(cb);
+        }
+
+        // 用 ScrollView 包裹列表，支持滚动查看全部选项（固定高度，超出可滚动）
+        android.widget.ScrollView scrollView = new android.widget.ScrollView(context);
+        scrollView.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(260)));
+        scrollView.addView(listLayout);
+        content.addView(scrollView);
+
         new MaterialAlertDialogBuilder(context)
                 .setTitle(getString(R.string.pref_zygote_config_dialog))
-                .setMessage("⚠️ 排错提示：若孵化进程 ls /sdcard 提示 No such file or directory，\n说明未勾选 --mount-external-* 相关选项，新进程未挂载 /sdcard。\n请勾选 --mount-external-full 后重新注入。")
-                .setMultiChoiceItems(options, checked, (dialog, which, isChecked) -> {
-                    checked[which] = isChecked;
-                })
+                .setView(content)
                 .setPositiveButton("确定", (dialog, which) -> {
                     java.util.Set<String> newSelected = new java.util.HashSet<>();
                     for (int i = 0; i < values.length; i++) {
@@ -564,50 +612,25 @@ public class ZygoteFragment extends Fragment {
             return;
         }
 
-        // 执行前预览 payload
-        Context context = getActivity();
-        if (context == null) return;
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_payload_preview, null);
-        TextView preview = dialogView.findViewById(R.id.payload_preview_text);
-        preview.setText(payload);
-        // 危险参数警告
-        TextView warn = dialogView.findViewById(R.id.payload_warning);
-        TextView riskDetail = dialogView.findViewById(R.id.payload_risk_detail);
-        View confirmCard = dialogView.findViewById(R.id.payload_confirm_card);
-        com.google.android.material.textfield.TextInputEditText confirmInput =
-                dialogView.findViewById(R.id.payload_confirm_input);
-
-        boolean risky = isRiskyPayload(command);
-        if (risky) {
-            warn.setVisibility(View.VISIBLE);
-            // 展示具体风险明细
-            riskDetail.setVisibility(View.VISIBLE);
-            riskDetail.setText(buildRiskDetail(command));
-            // 强制确认输入
-            confirmCard.setVisibility(View.VISIBLE);
-        } else {
-            warn.setVisibility(View.GONE);
-            riskDetail.setVisibility(View.GONE);
-            confirmCard.setVisibility(View.GONE);
+        // 危险命令：保留简短的二次确认（不预览 payload），避免误触
+        if (isRiskyPayload(command)) {
+            Context context = getActivity();
+            if (context == null) return;
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle("危险操作确认")
+                    .setMessage(buildRiskDetail(command) + "\n\n确定要执行该命令吗？")
+                    .setPositiveButton("执行", (dialog, which) -> {
+                        runPayload(payload);
+                        showSnackbar(getString(R.string.payload_sign));
+                    })
+                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
+                    .show();
+            return;
         }
 
-        new MaterialAlertDialogBuilder(context)
-                .setTitle("执行确认")
-                .setView(dialogView)
-                .setPositiveButton("执行", (dialog, which) -> {
-                    if (risky) {
-                        // 危险操作必须输入「确认执行」
-                        String typed = confirmInput.getText() == null ? "" : confirmInput.getText().toString().trim();
-                        if (!typed.equals("确认执行")) {
-                            Toast.makeText(context, "请输入「确认执行」以继续", Toast.LENGTH_LONG).show();
-                            return; // 保持对话框不关闭
-                        }
-                    }
-                    runPayload(payload);
-                    showSnackbar(getString(R.string.payload_sign));
-                })
-                .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                .show();
+        // 普通命令：直接执行
+        runPayload(payload);
+        showSnackbar(getString(R.string.payload_sign));
     }
 
     private boolean isRiskyPayload(String command) {
@@ -1155,40 +1178,51 @@ public class ZygoteFragment extends Fragment {
             return;
         }
 
-        ShizukuExec("pm grant com.wqry085.deployesystem android.permission.WRITE_SECURE_SETTINGS");
-        ShizukuExec("am force-stop com.android.settings");
-
-        ShizukuExec("echo '" + escapeForShell(payload) + "' > /data/local/tmp/" +
-            getString(R.string.config_file));
-
-        ContentValues values = new ContentValues();
-        values.put(Settings.Global.NAME, "hidden_api_blacklist_exemptions");
-        values.put(Settings.Global.VALUE, payload);
-
-        try {
-            context.getContentResolver().insert(
-                Uri.parse("content://settings/global"), values);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to insert settings", e);
-            MaterialDialogHelper.showSimpleDialog(getActivity(),
-                getString(R.string.load_fail), e.toString());
-            return;
-        }
-
-        ShizukuExec("am start -n com.android.settings/.Settings");
-
-        handler.postDelayed(() -> {
-            ContentValues resetValues = new ContentValues();
-            resetValues.put(Settings.Global.NAME, "hidden_api_blacklist_exemptions");
-            resetValues.put(Settings.Global.VALUE, "null");
-
+        // 异步执行：Shizuku 命令 + 设置写入不在主线程，避免 ANR 卡死
+        new Thread(() -> {
             try {
-                context.getContentResolver().insert(
-                    Uri.parse("content://settings/global"), resetValues);
+                appendLog("[+] 正在注入...");
+                ShizukuExec("pm grant com.wqry085.deployesystem android.permission.WRITE_SECURE_SETTINGS");
+                ShizukuExec("am force-stop com.android.settings");
+
+                ShizukuExec("echo '" + escapeForShell(payload) + "' > /data/local/tmp/" +
+                        getString(R.string.config_file));
+
+                ContentValues values = new ContentValues();
+                values.put(Settings.Global.NAME, "hidden_api_blacklist_exemptions");
+                values.put(Settings.Global.VALUE, payload);
+
+                try {
+                    context.getContentResolver().insert(
+                            Uri.parse("content://settings/global"), values);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to insert settings", e);
+                    handler.post(() -> MaterialDialogHelper.showSimpleDialog(getActivity(),
+                            getString(R.string.load_fail), e.toString()));
+                    return;
+                }
+
+                ShizukuExec("am start -n com.android.settings/.Settings");
+                appendLog("[+] 已触发注入，等待重置...");
+
+                handler.postDelayed(() -> {
+                    ContentValues resetValues = new ContentValues();
+                    resetValues.put(Settings.Global.NAME, "hidden_api_blacklist_exemptions");
+                    resetValues.put(Settings.Global.VALUE, "null");
+
+                    try {
+                        context.getContentResolver().insert(
+                                Uri.parse("content://settings/global"), resetValues);
+                        appendLog("[+] 已重置系统设置");
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to reset settings", e);
+                    }
+                }, 200);
             } catch (Exception e) {
-                Log.e(TAG, "Failed to reset settings", e);
+                Log.e(TAG, "runPayload async failed", e);
+                handler.post(() -> showToast("注入失败: " + e.getMessage()));
             }
-        }, 200);
+        }).start();
     }
 
     private String escapeForShell(String input) {
@@ -1367,8 +1401,44 @@ public class ZygoteFragment extends Fragment {
     // ==================== 状态更新 ====================
 
     private void appendLog(String message) {
-        if (logValue != null) {
-            logValue.setText(message);
+        if (logValue == null) return;
+        String cur = logValue.getText().toString();
+        if (cur.equals(getString(R.string.zygote_fragment_no_logs))) {
+            cur = "";
+        }
+        // 追加日志，最多保留 50 行
+        String combined = cur.isEmpty() ? message : cur + "\n" + message;
+        String[] lines = combined.split("\n");
+        if (lines.length > 50) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = lines.length - 50; i < lines.length; i++) {
+                if (sb.length() > 0) sb.append("\n");
+                sb.append(lines[i]);
+            }
+            combined = sb.toString();
+        }
+        logValue.setText(combined);
+        // 同时更新完整日志区
+        if (logValueFull != null) {
+            logValueFull.setText(combined);
+        }
+        // 更新静态缓冲（供预设页读取输出）
+        sLastLog = combined;
+        // 展开状态下自动滚动到底部
+        if (isLogExpanded && logScroll != null) {
+            logScroll.post(() -> logScroll.fullScroll(android.view.View.FOCUS_DOWN));
+        }
+    }
+
+    /** 展开/收起完整日志 */
+    private void toggleLogExpanded() {
+        isLogExpanded = !isLogExpanded;
+        if (logScroll == null || btnExpandLog == null) return;
+        logScroll.setVisibility(isLogExpanded ? android.view.View.VISIBLE : android.view.View.GONE);
+        btnExpandLog.setImageResource(isLogExpanded
+                ? R.drawable.ic_expand_less : R.drawable.ic_expand_more);
+        if (isLogExpanded && logValueFull != null) {
+            logScroll.post(() -> logScroll.fullScroll(android.view.View.FOCUS_DOWN));
         }
     }
 

@@ -118,15 +118,47 @@
 
                         <TextView
                             android:id="@+id/log_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
                             android:maxLines="1"
+                            android:minLines="1"
                             android:text="@string/zygote_fragment_no_logs"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="12sp" />
                     </LinearLayout>
+
+                    <!-- 日志展开/收起按钮 -->
+                    <ImageButton
+                        android:id="@+id/btn_expand_log"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_expand_more"
+                        app:tint="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
+
+                <!-- 可滚动完整日志区（主题色，默认隐藏） -->
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/log_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="@drawable/bg_log_panel"
+                    android:padding="10dp"
+                    android:scrollbars="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/log_value_full"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:lineSpacingMultiplier="1.3"
+                        android:text="@string/zygote_fragment_no_logs"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textIsSelectable="false"
+                        android:textSize="11sp" />
+                </androidx.core.widget.NestedScrollView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

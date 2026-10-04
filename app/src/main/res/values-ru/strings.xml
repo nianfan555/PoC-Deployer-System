@@ -6,7 +6,7 @@
     <!-- AboutActivity -->
     <string name="about_category">О приложении</string>
     <string name="cve_title">Инструмент эксплуатации CVE-2024-31317</string>
-    <string name="beta_desc">Это бета-версия для тестирования и сбора отзывов.\nПожалуйста, сообщайте об ошибках: wqry085super@gmail.com</string>
+    <string name="beta_desc">Это бета-версия для тестирования и сбора отзывов.\nПожалуйста, сообщайте об ошибках: nianfan.520.gmail@gmail.com</string>
     <string name="dev_category">Разработчик</string>
     <string name="dev_home">Профиль разработчика на Coolapk</string>
     <string name="project_category">Проект</string>

@@ -6,7 +6,7 @@
     <!-- AboutActivity -->
     <string name="about_category">アプリについて</string>
     <string name="cve_title">脆弱性 CVE-2024-31317 利用ツール</string>
-    <string name="beta_desc">このバージョンはテスト版であり、フィードバックを収集することを目的としています。\n問題があれば、以下にご報告ください：wqry085super@gmail.com</string>
+    <string name="beta_desc">このバージョンはテスト版であり、フィードバックを収集することを目的としています。\n問題があれば、以下にご報告ください：nianfan.520.gmail@gmail.com</string>
     <string name="dev_category">開発者</string>
     <string name="dev_home">開発者のCoolapkプロフィール</string>
     <string name="project_category">プロジェクト</string>

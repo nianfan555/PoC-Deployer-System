@@ -6,7 +6,7 @@
     <!-- AboutActivity -->
     <string name="about_category">Acerca de la aplicación</string>
     <string name="cve_title">Herramienta de explotación CVE-2024-31317</string>
-    <string name="beta_desc">Esta es una versión beta para pruebas y recolección de comentarios.\nPor favor, informe de problemas a: wqry085super@gmail.com</string>
+    <string name="beta_desc">Esta es una versión beta para pruebas y recolección de comentarios.\nPor favor, informe de problemas a: nianfan.520.gmail@gmail.com</string>
     <string name="dev_category">Desarrollador</string>
     <string name="dev_home">Perfil del desarrollador en Coolapk</string>
     <string name="project_category">Proyecto</string>

@@ -80,6 +80,77 @@ public class PresetsFragment extends Fragment {
         grid.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
+    /**
+     * 运行预设并弹出输出对话框（读取载荷页日志缓冲中的新增输出）
+     */
+    private void runPresetWithOutput(PayloadPresetManager.Preset p, int position) {
+        // 🔒 硬性拦截：预设含重启类命令 → 100% 卡开机，直接阻止
+        String rebootReason = PayloadGuard.findRebootReason(p.payload);
+        if (rebootReason != null) {
+            Toast.makeText(requireContext(), "已阻止: " + rebootReason + "（重启命令 100% 卡开机）", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // 记录运行前日志基线
+        final String before = ZygoteFragment.sLastLog;
+        String result = PayloadPresetManager.injectPresetById(requireContext(), p.id);
+        if (result != null) {
+            Toast.makeText(requireContext(), "注入失败: " + result, Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(requireContext(), "已注入: " + p.name + "，等待输出...", Toast.LENGTH_SHORT).show();
+        refresh(); // 更新注入统计
+
+        // 异步等待输出回传（注入后输出经 socket 回传日志）
+        new Thread(() -> {
+            String output = "";
+            for (int i = 0; i < 30; i++) { // 最多等 6 秒
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    break;
+                }
+                String cur = ZygoteFragment.sLastLog;
+                if (!cur.equals(before) && cur.length() > before.length()) {
+                    output = cur.substring(Math.min(before.length(), cur.length()));
+                    // 已收集到新增输出
+                    if (output.contains(":") || output.trim().length() > 5) {
+                        break;
+                    }
+                }
+            }
+            final String finalOutput = output;
+            requireActivity().runOnUiThread(() -> showPresetOutputDialog(p.name, finalOutput));
+        }).start();
+    }
+
+    /** 展示预设执行输出对话框（主题配色） */
+    private void showPresetOutputDialog(String name, String output) {
+        String content = output == null || output.trim().isEmpty()
+                ? "(无输出回传)\n\n提示：请确认载荷页「启动服务」已开启，输出经 9981 端口回传；\n或切到「载荷」页展开日志查看。"
+                : output.trim();
+
+        // 构建对话框内容：滚动 TextView（跟随主题配色，非深色块）
+        android.widget.ScrollView scroll = new android.widget.ScrollView(requireContext());
+        android.widget.TextView tv = new android.widget.TextView(requireContext());
+        tv.setText(content);
+        tv.setTextSize(12f);
+        tv.setTypeface(android.graphics.Typeface.MONOSPACE);
+        tv.setTextColor(requireContext().getColor(R.color.md_theme_light_onSurface));
+        tv.setPadding(20, 16, 20, 16);
+        tv.setTextIsSelectable(false);
+        scroll.addView(tv);
+        scroll.setLayoutParams(new android.view.ViewGroup.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                (int) (getResources().getDisplayMetrics().density * 280)));
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("执行输出 · " + name)
+                .setView(scroll)
+                .setPositiveButton("关闭", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     private void exportPresets() {
         String json = PayloadPresetManager.exportPresets(requireContext());
         if (json.equals("[]") || json.isEmpty()) {
@@ -175,21 +246,7 @@ public class PresetsFragment extends Fragment {
             });
 
             // 运行
-            holder.runBtn.setOnClickListener(v -> {
-                // 🔒 硬性拦截：预设含重启类命令 → 100% 卡开机，直接阻止
-                String rebootReason = PayloadGuard.findRebootReason(p.payload);
-                if (rebootReason != null) {
-                    Toast.makeText(requireContext(), "已阻止: " + rebootReason + "（重启命令 100% 卡开机）", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                String result = PayloadPresetManager.injectPresetById(requireContext(), p.id);
-                Toast.makeText(requireContext(),
-                        result == null ? "已注入: " + p.name : "注入失败: " + result,
-                        result == null ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
-                if (result == null) {
-                    refresh(); // 更新注入统计显示
-                }
-            });
+            holder.runBtn.setOnClickListener(v -> runPresetWithOutput(p, holder.getBindingAdapterPosition()));
 
             // 编辑
             holder.editBtn.setOnClickListener(v -> showEditDialog(p, position));

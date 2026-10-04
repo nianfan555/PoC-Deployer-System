@@ -6,7 +6,7 @@
     <!-- AboutActivity -->
     <string name="about_category">About App</string>
     <string name="cve_title">CVE-2024-31317 Exploitation Tool</string>
-    <string name="beta_desc">This is a beta version for testing and feedback collection.\nPlease report issues to: wqry085super@gmail.com</string>
+    <string name="beta_desc">This is a beta version for testing and feedback collection.\nPlease report issues to: nianfan.520.gmail@gmail.com</string>
     <string name="remake_desc">此版本由 nianfan555 基于原作者 wqry085 的 PoC-Deployer-System 二次修改（二改），重新设计了 UI 并新增预制参数、开机自启动、使用说明等功能。感谢原作者的开源贡献！</string>
     <string name="dev_category">开发者</string>
     <string name="remake_dev_home">二改者 GitHub 主页</string>

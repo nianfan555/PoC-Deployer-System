@@ -5,7 +5,7 @@
     <!-- AboutActivity -->
     <string name="about_category">關於應用</string>
     <string name="cve_title">漏洞 CVE-2024-31317 使用工具</string>
-    <string name="beta_desc">此版本為測試版，目的是收集報告。\n請將你遇到的問題回饋至：wqry085super@gmail.com</string>
+    <string name="beta_desc">此版本為測試版，目的是收集報告。\n請將你遇到的問題回饋至：nianfan.520.gmail@gmail.com</string>
     <string name="dev_category">開發者</string>
     <string name="dev_home">開發者酷安主頁</string>
     <string name="project_category">專案</string>
