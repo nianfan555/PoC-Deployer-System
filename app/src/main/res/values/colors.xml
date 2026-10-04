@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ================================================================
+         MIUIx 风格色板（蓝色主题 #0054D6）
+         - 主色：科技蓝 #0054D6
+         - 柔和浅蓝背景
+         - 分组卡片圆角
+         ================================================================ -->
+
+    <!-- 浅色模式 -->
+    <color name="md_theme_light_primary">#0054D6</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_primaryContainer">#DCE3FF</color>
+    <color name="md_theme_light_onPrimaryContainer">#00164A</color>
+    <color name="md_theme_light_secondary">#575E71</color>
+    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="md_theme_light_secondaryContainer">#DBE2F9</color>
+    <color name="md_theme_light_onSecondaryContainer">#141B2C</color>
+    <color name="md_theme_light_tertiary">#705575</color>
+    <color name="md_theme_light_onTertiary">#FFFFFF</color>
+    <color name="md_theme_light_tertiaryContainer">#FAD8FC</color>
+    <color name="md_theme_light_onTertiaryContainer">#28122E</color>
+    <color name="md_theme_light_error">#BA1A1A</color>
+    <color name="md_theme_light_onError">#FFFFFF</color>
+    <color name="md_theme_light_errorContainer">#FFDAD6</color>
+    <color name="md_theme_light_onErrorContainer">#410002</color>
+    <color name="md_theme_light_background">#FAF9FF</color>
+    <color name="md_theme_light_onBackground">#1A1C1E</color>
+    <color name="md_theme_light_surface">#FAF9FF</color>
+    <color name="md_theme_light_onSurface">#1A1C1E</color>
+    <color name="md_theme_light_surfaceVariant">#E1E2EC</color>
+    <color name="md_theme_light_onSurfaceVariant">#44464F</color>
+    <color name="md_theme_light_outline">#75777F</color>
+    <color name="md_theme_light_outlineVariant">#C5C6D0</color>
+    <color name="md_theme_light_shadow">#000000</color>
+    <color name="md_theme_light_scrim">#000000</color>
+    <color name="md_theme_light_inverseSurface">#2F3033</color>
+    <color name="md_theme_light_inverseOnSurface">#F1F0F4</color>
+    <color name="md_theme_light_inversePrimary">#ACC6FF</color>
+    <color name="md_theme_light_surfaceTint">#0054D6</color>
+
+    <!-- 深色模式 -->
+    <color name="md_theme_dark_primary">#ACC6FF</color>
+    <color name="md_theme_dark_onPrimary">#002E7C</color>
+    <color name="md_theme_dark_primaryContainer">#0041A5</color>
+    <color name="md_theme_dark_onPrimaryContainer">#DCE3FF</color>
+    <color name="md_theme_dark_secondary">#BFC6DC</color>
+    <color name="md_theme_dark_onSecondary">#293041</color>
+    <color name="md_theme_dark_secondaryContainer">#3F4759</color>
+    <color name="md_theme_dark_onSecondaryContainer">#DBE2F9</color>
+    <color name="md_theme_dark_tertiary">#DDBCE1</color>
+    <color name="md_theme_dark_onTertiary">#3F2744</color>
+    <color name="md_theme_dark_tertiaryContainer">#573D5C</color>
+    <color name="md_theme_dark_onTertiaryContainer">#FAD8FC</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="md_theme_dark_errorContainer">#93000A</color>
+    <color name="md_theme_dark_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_dark_background">#111318</color>
+    <color name="md_theme_dark_onBackground">#E2E2E9</color>
+    <color name="md_theme_dark_surface">#111318</color>
+    <color name="md_theme_dark_onSurface">#E2E2E9</color>
+    <color name="md_theme_dark_surfaceVariant">#44464F</color>
+    <color name="md_theme_dark_onSurfaceVariant">#C5C6D0</color>
+    <color name="md_theme_dark_outline">#8E9099</color>
+    <color name="md_theme_dark_outlineVariant">#44464F</color>
+    <color name="md_theme_dark_shadow">#000000</color>
+    <color name="md_theme_dark_scrim">#000000</color>
+    <color name="md_theme_dark_inverseSurface">#E2E2E9</color>
+    <color name="md_theme_dark_inverseOnSurface">#2F3033</color>
+    <color name="md_theme_dark_inversePrimary">#0054D6</color>
+    <color name="md_theme_dark_surfaceTint">#ACC6FF</color>
+
+    <!-- ============ 兼容旧引用 ============ -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="orange_200">#FFFFCC80</color>
+    <color name="orange_700">#FFFF6D00</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray_200">#FFEEEEEE</color>
+    <color name="gray_500">#FF9E9E9E</color>
+    <color name="gray_700">#FF616161</color>
+
+    <color name="colorPrimary">#0054D6</color>
+    <color name="colorPrimaryDark">#0041A5</color>
+    <color name="colorAccent">#0054D6</color>
+
+    <!-- MIUIx 分组卡片相关 -->
+    <color name="miuix_card_background_light">#FFFFFFFF</color>
+    <color name="miuix_card_background_dark">#1C1E23</color>
+    <color name="miuix_page_background_light">#F3F4FA</color>
+    <color name="miuix_page_background_dark">#111318</color>
+    <color name="miuix_divider_light">#1A000000</color>
+    <color name="miuix_divider_dark">#1AFFFFFF</color>
+
+    <!-- 状态色 -->
+    <color name="cyber_green">#00C853</color>
+    <color name="cyber_red">#FF5252</color>
+
+    <!-- TWRP 解锁页（保持简洁深色） -->
+    <color name="twrp_background">#1B1B1F</color>
+    <color name="twrp_accent">#0054D6</color>
+    <color name="twrp_track_background">#2A2A30</color>
+    <color name="text_hint_white">#88FFFFFF</color>
+</resources>

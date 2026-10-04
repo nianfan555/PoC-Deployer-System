@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 夜间模式辅助色 -->
+    <color name="miuix_card_background_dark">#26221F</color>
+    <color name="miuix_page_background_dark">#191310</color>
+    <color name="miuix_divider_dark">#1AFFFFFF</color>
+    <color name="cyber_cyan">#00E5FF</color>
+    <color name="cyber_blue">#2196F3</color>
+    <color name="cyber_dark">#0A141E</color>
+    <color name="cyber_surface">#0F1B24</color>
+    <color name="cyber_surface_light">#152633</color>
+</resources>

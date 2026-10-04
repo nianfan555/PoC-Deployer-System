@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme Options -->
+    <string-array name="theme_entries">
+        <item>@string/theme_default</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_transparent</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>default</item>
+        <item>dark</item>
+        <item>transparent</item>
+    </string-array>
+
+    <!-- Language Options -->
+    <string-array name="language_entries">
+        <item>@string/language_system</item>
+        <item>@string/language_english</item>
+        <item>@string/language_chinese_simplified</item>
+        <item>@string/language_chinese_traditional</item>
+        <item>@string/language_japanese</item>
+        <item>@string/language_russian</item>
+        <item>@string/language_spanish</item>
+        <item>@string/language_french</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>system</item>
+        <item>en</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+        <item>ja</item>
+        <item>ru</item>
+        <item>es</item>
+        <item>fr</item>
+    </string-array>
+
+    <!-- Runtime Flags Options -->
+    <string-array name="runtime_flags_entries">
+        <item>Default (43267)</item>
+        <item>Disable Hidden API Checks (16384)</item>
+        <item>Enable Safemode (32768)</item>
+        <item>Enable CheckJNI (1)</item>
+        <item>None (0)</item>
+    </string-array>
+
+    <string-array name="runtime_flags_values">
+        <item>43267</item>
+        <item>16384</item>
+        <item>32768</item>
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="multi_select_options">
+            <item>--mount-external-android-writable</item>
+        <item>--mount-external-default</item>
+        <item>--mount-external-read</item>
+        <item>--mount-external-write</item>
+        <item>--mount-external-full</item>
+        <item>--mount-external-legacy</item>
+        <item>--is-top-app</item>
+        <item>--preload-default</item>
+        <item>--preload-app</item>
+        <item>--bind-mount-data-dirs</item>
+        <item>--bind-mount-storage-dirs</item>
+        <item>--mount-external-installer</item>
+        <item>--mount-external-pass-through</item>
+        <item>--mount-external-oplus-android-writable</item>
+    </string-array>
+
+    <string-array name="multi_select_values">
+        <item>option_1</item>
+        <item>option_2</item>
+        <item>option_3</item>
+        <item>option_4</item>
+        <item>option_5</item>
+        <item>option_6</item>
+        <item>option_7</item>
+        <item>option_8</item>
+        <item>option_9</item>
+        <item>option_10</item>
+        <item>option_11</item>
+        <item>option_12</item>
+        <item>option_13</item>
+        <item>option_14</item>
+    </string-array>
+
+</resources>

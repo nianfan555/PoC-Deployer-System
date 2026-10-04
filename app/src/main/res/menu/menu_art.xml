@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_zygote"
+        app:icon="@drawable/ic_log"
+        android:title="@string/menu_zygote_log"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_check_update"
+        android:title="@string/menu_check_update"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/menu_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_guide"
+        android:title="@string/menu_guide"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/menu_about"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,78 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'com.wqry085.deployesystem'
+    ndkVersion "29.0.14033849" 
+    compileSdk 33
+    
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+    
+    lintOptions {
+        abortOnError false
+    }
+   
+    defaultConfig {
+        applicationId "com.wqry085.deployesystem"
+        minSdk 28
+        targetSdk 28
+        versionCode 9
+        versionName "1.5.7"
+        
+        vectorDrawables { 
+            useSupportLibrary true
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release  // 应用签名配置
+        }
+    }
+    
+    externalNativeBuild {
+        cmake {
+            path file('src/main/jni/CMakeLists.txt')
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "11"
+  }
+}
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'org.jsoup:jsoup:1.15.3'
+    implementation 'org.json:json:20220320'
+    implementation 'com.drakeet.about:about:2.5.2'
+    implementation 'com.drakeet.multitype:multitype:4.3.0'
+    implementation "androidx.preference:preference:1.2.1"
+    implementation "dev.rikka.shizuku:api:12.2.0"
+    implementation "dev.rikka.shizuku:provider:12.2.0"
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+
+    // 添加 Termux 模块依赖
+    implementation project(":terminal-view")
+    implementation project(":terminal-emulator")
+}
